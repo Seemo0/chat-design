@@ -9,8 +9,28 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Signup = () => {
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("First name is required").min(3),
+      lastName: Yup.string().required("Last name is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      password: Yup.string().required("Password is required"),
+    }),
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
   const navigate = useNavigate();
 
   return (
@@ -26,7 +46,15 @@ const Signup = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name" placeholder="First Name" required />
+              <Input
+                onChange={(e) => {
+                  formik.setFieldValue("firstName", e.target.value);
+                  formik.setFieldTouched("firstName", true , false);
+                }}
+                id="first-name"
+                placeholder="First Name"
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="last-name">Last name</Label>
